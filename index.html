@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <!-- Google Fonts for crisp typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #0d0c10;
+            --card-bg: #16151a;
+            --card-border: #282630;
+            --input-bg: #1e1c24;
+            --text-primary: #f4f4f6;
+            --text-secondary: #9b95a8;
+            --accent: #6366f1;
+            --accent-light: rgba(99, 102, 241, 0.15);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.07) 0px, transparent 40%),
+                radial-gradient(at 90% 90%, rgba(139, 92, 246, 0.05) 0px, transparent 40%);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+        }
+
+        .container-bar {
+            padding: 24px 28px 18px;
+            border-bottom: 1px solid var(--card-border);
+            text-align: center;
+        }
+
+        .generate-text1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .main-container {
+            padding: 24px 28px 28px;
+        }
+
+        /* Password Display Box */
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background-color: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 6px 10px 6px 16px;
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .input-container:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .password-display {
+            flex: 1;
+            height: 48px;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-left: 6px;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-img {
+            filter: brightness(0) invert(0.9);
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+        }
+
+        /* Customize Section */
+        .main-container1 {
+            background: transparent;
+        }
+
+        .customize-heading {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .main-container1 hr {
+            display: none;
+        }
+
+        /* Length Slider Section */
+        .length-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .length-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .password-length-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        input[type="number"] {
+            width: 56px;
+            height: 34px;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            background-color: var(--input-bg);
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent);
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .range-wrapper {
+            width: 100%;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #282533;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid var(--accent);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+            transition: var(--transition);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        /* Options Grid */
+        .input-btn {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 0;
+        }
+
+        @media (max-width: 480px) {
+            .input-btn {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .radio-btn, .checkbox-btn {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-md);
+            padding: 16px;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1px solid #484457;
+            background-color: var(--input-bg);
+            border-radius: 4px;
+            margin: 0;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            transform: none;
+            flex-shrink: 0;
+        }
+
+        input[type="radio"] {
+            border-radius: 50%;
+        }
+
+        input[type="checkbox"]:checked, input[type="radio"]:checked {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        input[type="checkbox"]:checked::before {
+            content: "";
+            width: 8px;
+            height: 5px;
+            border-left: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            transform: rotate(-45deg) translate(0.5px, -0.5px);
+        }
+
+        input[type="radio"]:checked::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #ffffff;
+        }
+
+        input[type="checkbox"]:disabled, input[type="radio"]:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        input[type="checkbox"]:disabled + label, input[type="radio"]:disabled + label {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .option-row label {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .info-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .info-icon-img {
+            width: 15px;
+            height: 15px;
+            opacity: 0.45;
+            filter: brightness(0) invert(0.8);
+            transition: var(--transition);
+            cursor: pointer;
+            margin: 0 !important;
+        }
+
+        .info-wrapper:hover .info-icon-img {
+            opacity: 1;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Pure CSS Tooltip */
+        .info-wrapper[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 130%;
+            right: -8px;
+            transform: translateY(4px);
+            background: #252230;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 10;
+        }
+
+        .info-wrapper:hover[data-tooltip]::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Generate Button */
+        .btn-generate {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .generate-password {
+            width: 100%;
+            height: 50px;
+            background: var(--text-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--bg-main);
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(255, 255, 255, 0.08);
+        }
+
+        .generate-password:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.16);
+        }
+
+        .generate-password:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="container-bar">
+            <h1 class="generate-text1">Password Generator</h1>
+        </div>
+
+        <div class="main-container">
+            <div class="input-container">
+                <input type="text" name="password" class="password-display" readonly placeholder="Generating password...">
+                <button class="cancel-password btn" title="Clear">
+                    <img src="cross-23-removebg-preview.png" alt="clear" class="btn-img">
+                </button>
+                <button class="copy-btn btn" onclick="copyPassword()" title="Copy">
+                    <img src="copy.png" alt="copy" class="btn-img">
+                </button>
+            </div>
+
+            <div class="main-container1">
+                <h3 class="customize-heading">Customize Your Password</h3>
+                
+                <div class="customize">
+                    <div class="length-section">
+                        <div class="length-header">
+                            <span class="password-length-text">Password length</span>
+                            <label>
+                                <input type="number" name="password-number" class="password-length" min="1" max="50" id="password-number" value="16">
+                            </label>
+                        </div>
+                        <div class="range-wrapper">
+                            <label style="width: 100%; display: block;">
+                                <input type="range" name="password-range" class="password-length" id="password-range" min="1" max="50" value="16">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="input-btn">
+                        <div class="radio-btn">
+                            <div class="option-row">
+                                <input type="radio" name="radio_btn" value="Easy_to_say" id="Easy_to_say">
+                                <label for="Easy_to_say">Easy to say</label>
+                                <div class="info-wrapper" data-tooltip="Avoid numbers and special characters">
+                                    <img src="info-icon.png" class="info-icon-img" alt="info">
+                                </div>
+                            </div>
+                            <div class="option-row">
+                                <input type="radio" name="radio_btn" value="Easy_to_read" id="Easy_to_read">
+                                <label for="Easy_to_read">Easy to read</label>
+                                <div class="info-wrapper" data-tooltip="Avoid ambiguous characters like l, 1, O, 0">
+                                    <img src="info-icon.png" class="info-icon-img" alt="info">
+                                </div>
+                            </div>
+                            <div class="option-row">
+                                <input type="radio" name="radio_btn" id="All_Charcters" value="All_Charcters" checked>
+                                <label for="All_Charcters">All Characters</label>
+                                <div class="info-wrapper" data-tooltip="Any character combinations like !,7,h,k">
+                                    <img src="info-icon.png" class="info-icon-img" alt="info">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="checkbox-btn">
+                            <div class="option-row">
+                                <input type="checkbox" name="checkbox_btn" value="Uppercase" id="Uppercase" checked>
+                                <label for="Uppercase">Uppercase</label>
+                            </div>
+                            <div class="option-row">
+                                <input type="checkbox" name="checkbox_btn" value="Lowercase" id="Lowercase" checked>
+                                <label for="Lowercase">Lowercase</label>
+                            </div>
+                            <div class="option-row">
+                                <input type="checkbox" name="checkbox_btn" value="Numbers" id="Numbers" checked>
+                                <label for="Numbers">Numbers</label>
+                            </div>
+                            <div class="option-row">
+                                <input type="checkbox" name="checkbox_btn" value="Symbols" id="Symbols" checked>
+                                <label for="Symbols">Symbols</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-generate">
+                        <button class="generate-password" onclick="createPassword()">Generate Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let password_display = document.querySelector(".password-display");
+        let cancel_password = document.querySelector(".cancel-password");
+        let password_number = document.getElementById("password-number");
+        let password_range = document.getElementById("password-range");
+        let radio_btn = document.querySelectorAll("input[type='radio']");
+        let checkbox_btn = document.querySelectorAll("input[type='checkbox']");
+        var length = password_number ? parseInt(password_number.value, 10) : 16;
+
+        cancel_password.addEventListener('click', () => {
+            password_display.value = "";
+        });
+
+        password_number.addEventListener("input", () => {
+            password_range.value = password_number.value;
+            length = password_number.value;
+        });
+       
+        password_range.addEventListener("input", () => {
+            password_number.value = password_range.value;
+            length = password_range.value;
+        });
+       
+        radio_btn.forEach(radio => {
+            radio.addEventListener('input', (event) => {
+                if (event.target.value == "Easy_to_say") {
+                    document.querySelectorAll("input[type=checkbox]").forEach((val) => {
+                        val.checked = true;
+                        document.querySelector("input[value=Numbers]").disabled = true;
+                        document.querySelector("input[value=Symbols]").disabled = true;
+                    });
+                } else if (event.target.value == "All_Charcters") {
+                    document.querySelectorAll("input[type=checkbox]").forEach((val) => {
+                        val.checked = true;
+                        document.querySelector("input[value=Numbers]").disabled = false;
+                        document.querySelector("input[value=Symbols]").disabled = false;
+                    });
+                } else {
+                    document.querySelector("input[value=Numbers]").checked = false;
+                    document.querySelector("input[value=Symbols]").checked = false;
+                    document.querySelector("input[value=Numbers]").disabled = false;
+                    document.querySelector("input[value=Symbols]").disabled = false;
+                }
+            });
+        });
+     
+        const symbols = '!@#$%^&*()-_=+[]{}|;:,.<>?/`~';
+        const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+        const numbers = '0123456789';
+        
+        function createPassword() {
+            let unique = "";
+            let val;
+            radio_btn.forEach(num => {
+                if (num.checked == true) {
+                    val = num.value;
+                }
+            });
+            checkbox_btn.forEach(check => {
+                if (val == "All_Charcters") {
+                    if (check.checked == true) {
+                        if (check.value == "Symbols") { unique += symbols; }
+                        if (check.value == "Numbers") { unique += numbers; }
+                        if (check.value == "Lowercase") { unique += lowercase; }
+                        if (check.value == "Uppercase") { unique += uppercase; }
+                    }
+                } else if (val == "Easy_to_say") {
+                    if (check.checked == true) {
+                        if (check.value == "Lowercase") { unique += lowercase; }
+                        if (check.value == "Uppercase") { unique += uppercase; }
+                    }
+                } else {
+                    const symb = "!@#$%^&*";
+                    const lower = "abcdefghijkmnopqrstuvwxyz";
+                    const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+                    const num = "23456789";
+                    if (check.checked == true) {
+                        if (check.value == "Symbols") { unique += symb; }
+                        if (check.value == "Numbers") { unique += num; }
+                        if (check.value == "Lowercase") { unique += lower; }
+                        if (check.value == "Uppercase") { unique += upper; }
+                    }
+                }
+            });
+            if (!unique) return;
+            passwordGenerator(unique);
+        }
+
+        function passwordGenerator(unique) {
+            let password = '';
+            password_display.value = '';
+            for (let i = 0; i < length; i++) {
+                password += unique[Math.floor(Math.random() * unique.length)];
+            }
+            password_display.value = password;
+        }
+        
+        function copyPassword() {
+            if (!password_display.value) return;
+            password_display.select();
+            document.execCommand('copy');
+
+            let copyBtn = document.querySelector('.copy-btn');
+            if (copyBtn) {
+                copyBtn.style.borderColor = 'var(--accent)';
+                setTimeout(() => {
+                    copyBtn.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                }, 600);
+            }
+        }
+
+        // Initial password generation on load
+        createPassword();
+    </script>
+</body>
+</html>
